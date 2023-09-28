@@ -7,6 +7,13 @@ import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
+@Entity
+@Table(name = "TB_PJ",
+uniqueConstraints = {
+        @UniqueConstraint(name = "UK_CNPJ_PJ", columnNames = "CNPJ_PJ")
+})
+
+
 
 public class PessoaJuridica extends Pessoa {
     private String CNPJ;

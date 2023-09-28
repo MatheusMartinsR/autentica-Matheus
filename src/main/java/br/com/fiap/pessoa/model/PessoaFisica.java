@@ -1,12 +1,24 @@
 package br.com.fiap.pessoa.model;
 
+import jakarta.persistence.*;
+
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+@Entity
+@Table(name = "TB_PESSOA_F",
+uniqueConstraints = {
+        @UniqueConstraint(name = "UK_CPF_PESSOA_F", columnNames = "CPF_PF")
+})
+
+
 public class PessoaFisica extends Pessoa {
+
+    @Column(name = "CPF_PF")
     private String CPF;
+    @Column(name = "Sexo_PF")
     private Sexo sexo;
     private Set<PessoaFisica> filhos = new LinkedHashSet<>(); //Os meus filhos
 

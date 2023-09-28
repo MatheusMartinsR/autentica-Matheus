@@ -1,21 +1,42 @@
 package br.com.fiap.authentication.model;
 
 import br.com.fiap.pessoa.model.Pessoa;
+import jakarta.persistence.*;
 
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+@Entity
+@Table(name = "TB_USER",
+uniqueConstraints = {
+        @UniqueConstraint(name = "UK_EMAIL_USER", columnNames = "EMAIL_USER")
+})
+
+
 /**
  * É o usuário de uma determinada pessoa nos sistemas da empresa
  */
 public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SQ_USER")
+    @Column(name = "ID_USER")
     private Long id;
 
+    @Column(name = "EMAIL_USER")
     private String email;
 
+    @Column(name = "PASSWORD_USER")
     private String password;
 
+    @Column(name = "PESSOA_USER")
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(
+            name = "pessoa",
+            referencedColumnName = "ID_USER",
+            foreignKey = @ForeignKey(name = "FK_USER_PESSOA")
+    )
     private Pessoa pessoa;
 
     private Set<Profile> profiles = new LinkedHashSet<>();
