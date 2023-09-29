@@ -9,7 +9,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "TB_ROLE",
 uniqueConstraints = {
-        @UniqueConstraint(name = "UK_SISTEMA", columnNames = "SISTEMA_ROLE")
+        @UniqueConstraint(name = "UK_ROLE_NOME", columnNames = {"NM_ROLE", "SISTEMA"})
 })
 public class Role {
     @Id
@@ -17,13 +17,18 @@ public class Role {
     @Column(name = "ID_ROLE")
     private Long id;
 
-    @Column(name = "NM_ROLE")
+    @Column(name = "NM_ROLE", nullable = false)
     private String nome;
 
-    @Column(name = "DESCRICAO_ROLE")
+    @Column(name = "DS_ROLE")
     private String descricao;
 
-    @Column(name = "SISTEMA_ROLE")
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(
+            name = "SISTEMA",
+            referencedColumnName = "ID_SISTEMA",
+            foreignKey = @ForeignKey(name = "FK_ROLE_SISTEMA")
+    )
     private Sistema sistema;
 
 

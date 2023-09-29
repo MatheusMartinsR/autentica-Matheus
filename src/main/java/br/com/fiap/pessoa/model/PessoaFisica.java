@@ -8,18 +8,31 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "TB_PESSOA_F",
-uniqueConstraints = {
-        @UniqueConstraint(name = "UK_CPF_PESSOA_F", columnNames = "CPF_PF")
+@Table(name = "TB_PF", uniqueConstraints = {
+        @UniqueConstraint(name = "UK_PF_CPF", columnNames = "NR_CPF")
 })
+@DiscriminatorValue("PF")
+
 
 
 public class PessoaFisica extends Pessoa {
 
-    @Column(name = "CPF_PF")
+    @Column(name = "NR_CPF", nullable = false)
     private String CPF;
-    @Column(name = "Sexo_PF")
+
+    @Enumerated(EnumType.STRING)
     private Sexo sexo;
+
+
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "TB_DEPENDENTES",
+    joinColumns = {
+            @JoinColumn(name = "PAIS", referencedColumnName = "ID_PESSOA", foreignKey = @ForeignKey(name = "FK_PAIS"))
+    },
+        inverseJoinColumns = {
+                @JoinColumn(name = "DEPENDENTE", referencedColumnName = "ID_PESSOA", foreignKey = @ForeignKey(name = "FK_DEPENDENTES"))
+        } )
     private Set<PessoaFisica> filhos = new LinkedHashSet<>(); //Os meus filhos
 
 

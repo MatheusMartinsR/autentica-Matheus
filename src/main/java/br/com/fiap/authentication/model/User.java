@@ -10,13 +10,16 @@ import java.util.Set;
 @Entity
 @Table(name = "TB_USER",
 uniqueConstraints = {
-        @UniqueConstraint(name = "UK_EMAIL_USER", columnNames = "EMAIL_USER")
+        @UniqueConstraint(name = "UK_USER_EMAIL", columnNames = "EMAIL_USER")
 })
 
 
 /**
  * É o usuário de uma determinada pessoa nos sistemas da empresa
  */
+
+@Entity
+@Table(name = "TB_USER")
 public class User {
 
     @Id
@@ -24,21 +27,33 @@ public class User {
     @Column(name = "ID_USER")
     private Long id;
 
-    @Column(name = "EMAIL_USER")
+    @Column(name = "EMAIL_USER", nullable = false)
     private String email;
 
-    @Column(name = "PASSWORD_USER")
+    @Column(name = "PASSWORD_USER", nullable = false)
     private String password;
 
-    @Column(name = "PESSOA_USER")
+
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(
             name = "pessoa",
-            referencedColumnName = "ID_USER",
+            referencedColumnName = "ID_PESSOA",
             foreignKey = @ForeignKey(name = "FK_USER_PESSOA")
     )
     private Pessoa pessoa;
 
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "TB_USER_PROFILE",
+            joinColumns = {
+                    @JoinColumn(name = "USER", referencedColumnName = "ID_USER", foreignKey = @ForeignKey(name = "FK_USER_PROFILE"))
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "PROFILE", referencedColumnName = "ID_PROFILE", foreignKey = @ForeignKey(name = "FK_PROFILE_USER"))
+            }
+
+    )
     private Set<Profile> profiles = new LinkedHashSet<>();
 
     public User() {

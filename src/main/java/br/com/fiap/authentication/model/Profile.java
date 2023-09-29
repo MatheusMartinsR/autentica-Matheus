@@ -19,14 +19,23 @@ import java.util.Set;
 public class Profile {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SQ_Profile")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SQ_PROFILE")
     @Column(name = "ID_Profile")
     private Long id;
 
-    @Column(name = "NM_PROFILE")
+    @Column(name = "NM_PROFILE", nullable = false)
     private String nome;
 
-
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "TB_PROFILE_ROLE",
+            joinColumns = {
+                    @JoinColumn(name = "PROFILE", referencedColumnName = "ID_PROFILE", foreignKey = @ForeignKey(name = "FK_PROFILE_ROLE") )
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "ROLE", referencedColumnName = "ID_ROLE", foreignKey = @ForeignKey(name = "FK_ROLE_PROFILE") )
+            }
+    )
     private Set<Role> roles = new LinkedHashSet<>();
 
     public Profile() {
